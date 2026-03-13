@@ -10,7 +10,7 @@ ARG UNBOUND_SHA256
 
 RUN microdnf install -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs \
       ca-certificates \
-      curl \
+      curl-minimal \
       expat-devel \
       gcc \
       gzip \

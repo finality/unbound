@@ -38,7 +38,10 @@ RUN ./configure \
       --disable-flto \
     && make -j"$(nproc)" \
     && make install \
-    && strip /usr/local/sbin/unbound /usr/local/sbin/unbound-anchor /usr/local/sbin/unbound-checkconf || true
+    && strip /usr/local/sbin/unbound /usr/local/sbin/unbound-anchor /usr/local/sbin/unbound-checkconf || true \
+    && test -x /usr/local/sbin/unbound \
+    && /usr/local/sbin/unbound -V >/dev/null \
+    && ldd /usr/local/sbin/unbound
 
 FROM ${UBI_MINIMAL_IMAGE}
 ARG UNBOUND_VERSION
@@ -62,7 +65,10 @@ RUN microdnf install -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs \
 COPY --from=builder /usr/local /usr/local
 COPY --chown=10001:10001 entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN chmod 0755 /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh \
+    && test -x /usr/local/sbin/unbound \
+    && ldd /usr/local/sbin/unbound \
+    && /usr/local/sbin/unbound -V >/dev/null
 
 USER 10001:10001
 

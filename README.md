@@ -17,6 +17,8 @@ The directory is structured to become its own standalone public repository.
 - Ships no hard-coded upstreams; use mounted fragments such as:
   - `examples/forward-records.conf`
   - `examples/local-access.conf`
+- Fails the image build if the final stage cannot execute `unbound`
+- Runs a startup self-check in the entrypoint before serving DNS
 
 ## Publishing
 

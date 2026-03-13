@@ -3,6 +3,7 @@ set -eu
 
 : "${UNBOUND_PORT:=5053}"
 : "${UNBOUND_VERBOSITY:=1}"
+: "${UNBOUND_BIN:=/usr/local/sbin/unbound}"
 
 CONFIG_PATH="/etc/unbound/unbound.conf"
 
@@ -37,4 +38,17 @@ for fragment in /config/*.conf; do
   printf 'include: "%s"\n' "${fragment}" >>"${CONFIG_PATH}"
 done
 
-exec /usr/local/sbin/unbound -d -c "${CONFIG_PATH}"
+if [ ! -x "${UNBOUND_BIN}" ]; then
+  echo "unbound entrypoint: binary is missing or not executable at ${UNBOUND_BIN}" >&2
+  ls -ld /usr/local /usr/local/bin /usr/local/sbin 2>/dev/null >&2 || true
+  ls -l /usr/local/bin /usr/local/sbin 2>/dev/null >&2 || true
+  exit 127
+fi
+
+if ! "${UNBOUND_BIN}" -V >/dev/null 2>&1; then
+  echo "unbound entrypoint: runtime self-check failed for ${UNBOUND_BIN}" >&2
+  "${UNBOUND_BIN}" -V >&2 || true
+  exit 127
+fi
+
+exec "${UNBOUND_BIN}" -d -c "${CONFIG_PATH}"

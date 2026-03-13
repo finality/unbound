@@ -1,4 +1,4 @@
-# Unbound Image
+# unbound
 
 This image builds Unbound from upstream NLnet Labs source on top of Red Hat UBI Minimal and publishes it to GitHub Container Registry.
 
@@ -22,13 +22,17 @@ The directory is structured to become its own standalone public repository.
 
 The workflow at `.github/workflows/publish-unbound.yml` publishes:
 
-- `ghcr.io/<owner>/unbound-ubi-minimal:latest`
-- `ghcr.io/<owner>/unbound-ubi-minimal:${UNBOUND_VERSION}`
-- `ghcr.io/<owner>/unbound-ubi-minimal:sha-<gitsha>`
+- `ghcr.io/<owner>/<repo>:latest`
+- `ghcr.io/<owner>/<repo>:${UNBOUND_VERSION}`
+- `ghcr.io/<owner>/<repo>:sha-<gitsha>`
+
+The image name is derived automatically from the GitHub repository path:
+
+- workflow value: `ghcr.io/${{ github.repository }}`
+- if the repository is named `unbound`, the published image will be `ghcr.io/<owner>/unbound`
 
 ## Updating Unbound
 
 1. Update `UNBOUND_VERSION` and `UNBOUND_SHA256` in `version.env`.
 2. Push the change or run the workflow manually.
 3. After GHCR publishes the image, pin VyOS to the image digest rather than a mutable tag.
-# unbound

@@ -11,6 +11,7 @@ ARG UNBOUND_SHA256
 RUN microdnf install -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs \
       ca-certificates \
       curl-minimal \
+      expat \
       expat-devel \
       gcc \
       gzip \
@@ -31,6 +32,7 @@ WORKDIR /tmp/unbound-${UNBOUND_VERSION}
 RUN ./configure \
       --prefix=/usr/local \
       --sysconfdir=/etc/unbound \
+      --with-libexpat=/usr \
       --with-libevent \
       --with-libexpat \
       --with-pthreads \

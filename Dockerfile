@@ -11,6 +11,7 @@ ARG UNBOUND_SHA256
 RUN microdnf install -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs \
       ca-certificates \
       curl-minimal \
+      diffutils \
       expat \
       expat-devel \
       gcc \
@@ -29,12 +30,15 @@ RUN curl -fsSLO "https://nlnetlabs.nl/downloads/unbound/unbound-${UNBOUND_VERSIO
 
 WORKDIR /tmp/unbound-${UNBOUND_VERSION}
 
-RUN ./configure \
+RUN test -f /usr/include/expat.h \
+    && ls -l /usr/include/expat.h /usr/lib64/libexpat* \
+    && pkg-config --cflags expat \
+    && pkg-config --libs expat \
+    && ./configure \
       --prefix=/usr/local \
       --sysconfdir=/etc/unbound \
       --with-libexpat=/usr \
       --with-libevent \
-      --with-libexpat \
       --with-pthreads \
       --with-ssl \
       --disable-flto \
